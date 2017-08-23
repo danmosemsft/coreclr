@@ -52,16 +52,28 @@
 
   <Import Project="..\dir.traversal.targets" />
 
+    <PropertyGroup>
+      <TofUberFile>$([System.IO.Path]::GetFullPath(`$(BinDir)toffile.txt`))</TofUberFile>
+    </PropertyGroup>  
 
-  <Target Name="WriteTofLine"> 
-   
+
+  <Target Name="WriteTofLine">
+   <CallTarget Targets="WriteTofLineTraverse;CombineTofLines"/>
+   </Target>
+
+   <Target Name="WriteTofLineTraverse">
     <!-- Traverse to all projects, collecting paths to each project's tof file--> 
     <MSBuild Targets="WriteTofLine"
              Projects="@(Project)"
              BuildInParallel="true">
 
       <Output TaskParameter="TargetOutputs" ItemName="TofFilesToCombine"/>
+
     </MSBuild>
+
+  </Target>
+
+  <Target Name="CombineTofLines" Inputs="@(TofFilesToCombine);$(MSBuildThisProjectFullPath)" Outputs="$(TofUberFile)">
 
     <!-- Read all the lines out -->
     <MakeDir Directories="$(BinDir)" />
@@ -70,9 +82,7 @@
     </ReadLinesFromFile>
 
     <!-- Write them into an uber file -->
-    <PropertyGroup>
-      <TofUberFile>$([System.IO.Path]::GetFullPath(`$(BinDir)toffile.txt`))</TofUberFile>
-    </PropertyGroup>
+
 
 
     <WriteLinesToFile File="$(TofUberFile)"
