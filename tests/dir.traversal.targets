@@ -49,6 +49,15 @@
     <Error Condition="'$(MSBuildLastTaskResult)'=='false'" />
   </Target>
 
+  <Target Name="WriteTofLine"> 
+   
+    <!-- Just traverse downwards --> 
+    <MSBuild Targets="WriteTofLine"
+             Projects="@(Project)"
+             BuildInParallel="true"/>
+
+  </Target>
+
   <Target Name="RestoreAllProjectPackages">
     <Message Importance="High" Text="Restoring project packages..." />
 

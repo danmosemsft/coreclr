@@ -12,7 +12,7 @@
     <Warning Text="Looks like there may be an update to the build tools. Please run buildtest.cmd from the root of the repo to refresh the build tools." /> 
   </Target>
 
-  <Target Name="ResolveDisabledProjects" BeforeTargets="BuildAllProjects" >
+  <Target Name="ResolveDisabledProjects" BeforeTargets="BuildAllProjects;WriteTofLine" >
     <ItemGroup>
       <DisabledProjects Include="TestWrappers*\**\*.csproj" />
       <DisabledProjects Include="*\**\cs_template.csproj" />
@@ -34,16 +34,54 @@
     </ItemGroup>
     
     <ItemGroup>
+     <!-- 
       <Project Include="*\**\*.csproj" Exclude="@(DisabledProjects)">
         <AdditionalProperties>OSGroup=$(OSGroup)</AdditionalProperties>
       </Project>
       <Project Include="*\**\*.ilproj" Exclude="@(DisabledProjects)">
         <AdditionalProperties>OSGroup=$(OSGroup)</AdditionalProperties>
       </Project>
+         -->   
+     
+      <Project Include="Loader\classloader\generics\**\*.ilproj" Exclude="@(DisabledProjects)">
+        <AdditionalProperties>OSGroup=$(OSGroup)</AdditionalProperties>
+      </Project>
+    
     </ItemGroup>
   </Target>
 
   <Import Project="..\dir.traversal.targets" />
+
+
+  <Target Name="WriteTofLine"> 
+   
+    <!-- Traverse to all projects, collecting paths to each project's tof file--> 
+    <MSBuild Targets="WriteTofLine"
+             Projects="@(Project)"
+             BuildInParallel="true">
+
+      <Output TaskParameter="TargetOutputs" ItemName="TofFilesToCombine"/>
+    </MSBuild>
+
+    <!-- Read all the lines out -->
+    <MakeDir Directories="$(BinDir)" />
+    <ReadLinesFromFile File="%(TofFilesToCombine.Identity)">
+      <Output TaskParameter="Lines" ItemName="LinesForTofUberFile"/>
+    </ReadLinesFromFile>
+
+    <!-- Write them into an uber file -->
+    <PropertyGroup>
+      <TofUberFile>$([System.IO.Path]::GetFullPath(`$(BinDir)toffile.txt`))</TofUberFile>
+    </PropertyGroup>
+
+
+    <WriteLinesToFile File="$(TofUberFile)"
+                      Overwrite="true"
+                      Lines="@(LinesForTofUberFile)" />
+
+    <Warning Text="Written combined file to $(TofUberFile) ....done" />
+
+  </Target>
   
   <!-- Override clean from dir.traversal.targets and just remove the full BinDir -->
   <Target Name="Clean">
