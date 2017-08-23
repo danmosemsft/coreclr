@@ -77,14 +77,9 @@
     </ReadLinesFromFile>
 
     <!-- Write them into an uber file -->
-
-
-
     <WriteLinesToFile File="$(TofUberFile)"
                       Overwrite="true"
                       Lines="@(LinesForTofUberFile)" />
-
-    <Warning Text="Written combined file to $(TofUberFile) ....done" />
 
   </Target>
   

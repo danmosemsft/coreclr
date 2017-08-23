@@ -187,7 +187,6 @@
   <Target Name="WriteTofLine" Inputs="$(MSBuildProjectFullPath)" Outputs="$(IntermediateOutputPath)tofline.txt">
 
      <!-- Write any information for this project to put in the uber-tof file -->
-<Warning Text="Writing line to $(IntermediateOutputPath)tofline.txt" />
      <MakeDir Directories="$(IntermediateOutputPath)" />
      <WriteLinesToFile File="$(IntermediateOutputPath)tofline.txt"
                        Overwrite="true"
