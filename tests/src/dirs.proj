@@ -34,19 +34,14 @@
     </ItemGroup>
     
     <ItemGroup>
-     <!-- 
+      
       <Project Include="*\**\*.csproj" Exclude="@(DisabledProjects)">
         <AdditionalProperties>OSGroup=$(OSGroup)</AdditionalProperties>
       </Project>
       <Project Include="*\**\*.ilproj" Exclude="@(DisabledProjects)">
         <AdditionalProperties>OSGroup=$(OSGroup)</AdditionalProperties>
       </Project>
-         -->   
-     
-      <Project Include="Loader\classloader\generics\**\*.ilproj" Exclude="@(DisabledProjects)">
-        <AdditionalProperties>OSGroup=$(OSGroup)</AdditionalProperties>
-      </Project>
-    
+
     </ItemGroup>
   </Target>
 
